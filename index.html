@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>¡Feliz Cumpleaños, Silvia! ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #05060b;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #fce4ec;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 1;
+      touch-action: none;
+    }
+
+    /* Barra Superior */
+    .top-bar {
+      position: absolute;
+      top: 18px;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      pointer-events: none;
+    }
+
+    .title-group {
+      pointer-events: auto;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.85);
+    }
+
+    .title-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: #ffd54f;
+      opacity: 0.95;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .title-main {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      color: #fff5f5;
+      text-shadow: 0 0 24px rgba(255, 64, 129, 0.55), 0 2px 6px rgba(0,0,0,0.8);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .btn-glass {
+      background: rgba(22, 16, 26, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 215, 64, 0.4);
+      color: #fff3e0;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 64, 129, 0.35);
+      border-color: rgba(255, 215, 64, 0.7);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(255, 64, 129, 0.4);
+    }
+
+    /* Panel Compacto Minimalista */
+    .mini-panel {
+      position: absolute;
+      bottom: 22px;
+      left: 22px;
+      z-index: 10;
+      width: 270px;
+      background: rgba(14, 10, 18, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 215, 64, 0.3);
+      border-radius: 20px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.65);
+      transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .mini-panel.collapsed {
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26, 12, 22, 0.88);
+      border: 1px solid rgba(255, 215, 64, 0.6);
+    }
+
+    .mini-panel.collapsed .panel-content {
+      display: none;
+    }
+
+    .mini-panel.collapsed .collapsed-icon {
+      display: block;
+      font-size: 1.35rem;
+    }
+
+    .collapsed-icon {
+      display: none;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .flower-counter {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #ff80ab;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.15rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .toggle-btn:hover {
+      color: #fff;
+    }
+
+    .quote-snippet {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: #f8bbd0;
+      margin-bottom: 12px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn-gold-mini {
+      background: linear-gradient(135deg, #ffd54f 0%, #ff4081 100%);
+      color: #210309;
+      font-weight: 700;
+      border: none;
+      padding: 8px 11px;
+      font-size: 0.75rem;
+      border-radius: 12px;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+      box-shadow: 0 3px 12px rgba(255, 64, 129, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .btn-cake-mini {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 215, 64, 0.45);
+      color: #fff;
+      font-weight: 600;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-gold-mini:hover, .btn-cake-mini:hover {
+      transform: scale(1.05);
+    }
+
+    .wind-widget {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      color: #eee;
+    }
+
+    .wind-widget input[type="range"] {
+      width: 48px;
+      accent-color: #ff4081;
+      height: 4px;
+    }
+
+    /* Modal Felicitación */
+    .letter-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 3, 6, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .letter-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .letter-card {
+      max-width: 480px;
+      width: 100%;
+      background: radial-gradient(circle at 15% 15%, rgba(42, 14, 28, 0.96), rgba(18, 6, 14, 0.98));
+      border: 1px solid rgba(255, 215, 64, 0.5);
+      border-radius: 24px;
+      padding: 34px 30px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 40px rgba(255, 64, 129, 0.25);
+      transform: translateY(20px) scale(0.95);
+      transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .letter-modal.active .letter-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .close-card {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      color: #bbb;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .letter-card h3 {
+      font-family: 'Cinzel', serif;
+      color: #ffd740;
+      font-size: 1.5rem;
+      margin-bottom: 14px;
+      letter-spacing: 1.5px;
+    }
+
+    .letter-card p {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #fce4ec;
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+
+    .card-signature {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: #ff80ab;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .mini-panel {
+        left: 12px;
+        bottom: 12px;
+        width: 240px;
+        padding: 10px 12px;
+      }
+      .top-bar {
+        padding: 0 16px;
+        top: 14px;
+      }
+      .title-tag {
+        font-size: 0.65rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="gardenCanvas"></canvas>
+
+  <!-- Barra Superior -->
+  <header class="top-bar">
+    <div class="title-group">
+      <div class="title-tag">🌸 Celebrando un Día Muy Especial 🌸</div>
+      <h1 class="title-main">¡Feliz Cumpleaños, Silvia!</h1>
+    </div>
+    <div class="top-actions">
+      <button class="btn-glass" id="btnLetter" aria-label="Abrir Mensaje">
+        <span>💌</span>
+        <span>Para Silvia</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Panel en la esquina inferior izquierda -->
+  <aside class="mini-panel" id="miniPanel">
+    <div class="collapsed-icon" title="Expandir">💐</div>
+    
+    <div class="panel-content">
+      <div class="panel-header">
+        <span class="flower-counter" id="flowerCount">💐 0 flores de fiesta</span>
+        <button class="toggle-btn" id="toggleCollapse" title="Minimizar panel">—</button>
+      </div>
+
+      <p class="quote-snippet" id="quoteSnippet">
+        «Que este nuevo año de vida llegue colmado de sonrisas, salud, prosperidad y bendiciones para ti, Silvia.»
+      </p>
+
+      <div class="action-row">
+        <button class="btn-gold-mini" id="btnSpawn">🌸 Sembrar Flor</button>
+        <button class="btn-cake-mini" id="btnBlow" title="Soplar o encender velitas">🎂 Velitas</button>
+        <div class="wind-widget" title="Brisa">
+          <span>🍃</span>
+          <input type="range" id="windSlider" min="5" max="45" value="16">
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Modal Felicitación para Silvia -->
+  <div class="letter-modal" id="letterModal">
+    <div class="letter-card">
+      <button class="close-card" id="btnCloseLetter">&times;</button>
+      <div style="font-size: 2.4rem; margin-bottom: 8px;">✨🎂🎉</div>
+      <h3>¡Feliz Cumpleaños, Silvia!</h3>
+      <p>
+        Hoy celebramos tu vida y la alegría de este día tan especial. 
+        Que esta nueva vuelta al sol te sorprenda con grandes éxitos, profunda paz, salud inquebrantable y momentos inolvidables rodeada de luz y felicidad.
+        <br><br>
+        ¡Que cada uno de tus deseos se haga realidad hoy y siempre!
+      </p>
+      <div class="card-signature">— Con los mejores deseos en tu día</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gardenCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    // Audio procedural con Web Audio API
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playSoftChime() {
+      if (!audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const freqs = [523.25, 659.25, 783.99, 880.00, 1046.50, 1318.51];
+        const f = freqs[Math.floor(Math.random() * freqs.length)];
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.8);
+      } catch (e) {}
+    }
+
+    function playCelebrationFanfare() {
+      if (!audioCtx) return;
+      try {
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+          gain.gain.setValueAtTime(0.06, audioCtx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + idx * 0.08 + 1.4);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + idx * 0.08);
+          osc.stop(audioCtx.currentTime + idx * 0.08 + 1.4);
+        });
+      } catch (e) {}
+    }
+
+    // Colecciones de la escena
+    let flowers = [];
+    let petals = [];
+    let stars = [];
+    let fireflies = [];
+    let grassBlades = [];
+    let confetti = [];
+
+    let windTarget = 16;
+    let currentWind = 16;
+    let globalTime = 0;
+
+    // ESTADO: Pastel de Cumpleaños de 3 Niveles
+    const cakeState = {
+      x: width * 0.5,
+      y: height - 50,
+      width: Math.min(270, width * 0.65),
+      height: 185,
+      candlesLit: true,
+      smokeParticles: []
+    };
+
+    // Paletas multicolor vivas y refinadas
+    const flowerPalettes = [
+      { dark: '#2b0207', mid: '#8a0a19', main: '#ba1426', light: '#e53935', rim: '#ff8a80', glow: 'rgba(229, 57, 53, 0.35)' },
+      { dark: '#3b0024', mid: '#9c27b0', main: '#e91e63', light: '#f06292', rim: '#f8bbd0', glow: 'rgba(233, 30, 99, 0.35)' },
+      { dark: '#210038', mid: '#4a148c', main: '#7b1fa2', light: '#ba68c8', rim: '#e1bee7', glow: 'rgba(123, 31, 162, 0.35)' },
+      { dark: '#382600', mid: '#f57f17', main: '#fbc02d', light: '#ffee58', rim: '#fffde7', glow: 'rgba(251, 192, 45, 0.35)' },
+      { dark: '#3d1607', mid: '#e64a19', main: '#ff7043', light: '#ffab91', rim: '#ffebee', glow: 'rgba(255, 112, 67, 0.35)' },
+      { dark: '#021a36', mid: '#0277bd', main: '#0288d1', light: '#4fc3f7', rim: '#b3e5fc', glow: 'rgba(2, 136, 209, 0.35)' },
+      { dark: '#2c2c2c', mid: '#90a4ae', main: '#cfd8dc', light: '#ffffff', rim: '#eceff1', glow: 'rgba(255, 255, 255, 0.45)' }
+    ];
+
+    // Flor / Rosa Multicolor Natural
+    class MultiColorFlower {
+      constructor(x, y, scale = 1) {
+        this.baseX = x;
+        this.baseY = y || height + 25;
+        this.height = (height * (0.35 + Math.random() * 0.38)) * scale;
+        this.scale = scale;
+        this.palette = flowerPalettes[Math.floor(Math.random() * flowerPalettes.length)];
+
+        this.headSize = (26 + Math.random() * 16) * scale;
+        this.stemWidth = (4.5 + Math.random() * 2.5) * scale;
+        this.swaySpeed = 0.65 + Math.random() * 0.6;
+        this.anglePhase = Math.random() * Math.PI * 2;
+
+        this.growth = 0.05;
+        this.targetGrowth = 1;
+
+        this.leafSide = Math.random() > 0.5 ? 1 : -1;
+        this.leafHeightRatio = 0.3 + Math.random() * 0.3;
+      }
+
+      update(wind) {
+        if (this.growth < this.targetGrowth) {
+          this.growth += (this.targetGrowth - this.growth) * 0.05;
+        }
+        const naturalOsc = Math.sin(globalTime * this.swaySpeed + this.anglePhase);
+        const windPush = (wind / 30) * 26;
+        this.currentBend = (naturalOsc * 13 + windPush) * this.growth;
+      }
+
+      draw() {
+        const currentH = this.height * this.growth;
+        const tipX = this.baseX + this.currentBend;
+        const tipY = this.baseY - currentH;
+
+        const ctrlX = this.baseX + this.currentBend * 0.35;
+        const ctrlY = this.baseY - currentH * 0.55;
+
+        // Tallo
+        ctx.beginPath();
+        ctx.moveTo(this.baseX, this.baseY);
+        ctx.quadraticCurveTo(ctrlX, ctrlY, tipX, tipY);
+        ctx.strokeStyle = '#1d3e1b';
+        ctx.lineWidth = this.stemWidth;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        // Espinas
+        const thornY = this.baseY - currentH * 0.45;
+        const thornX = this.baseX + this.currentBend * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(thornX, thornY);
+        ctx.lineTo(thornX - 7 * this.scale, thornY - 3 * this.scale);
+        ctx.lineTo(thornX - 2 * this.scale, thornY + 5 * this.scale);
+        ctx.fillStyle = '#3f1c1e';
+        ctx.fill();
+
+        // Hoja verde
+        const leafY = this.baseY - currentH * this.leafHeightRatio;
+        const leafX = this.baseX + this.currentBend * this.leafHeightRatio;
+        ctx.save();
+        ctx.translate(leafX, leafY);
+        ctx.rotate((this.leafSide * 0.65) + (this.currentBend * 0.01));
+        
+        ctx.beginPath();
+        ctx.ellipse(this.leafSide * 18 * this.scale, 0, 20 * this.scale, 8 * this.scale, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#265324';
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(102, 187, 106, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(this.leafSide * 34 * this.scale, 0);
+        ctx.stroke();
+        ctx.restore();
+
+        // Cabeza Floral
+        ctx.save();
+        ctx.translate(tipX, tipY);
+        ctx.rotate(this.currentBend * 0.016);
+
+        const sz = this.headSize * this.growth;
+
+        // Sépalos verdes
+        for (let s = -1; s <= 1; s += 2) {
+          ctx.beginPath();
+          ctx.moveTo(0, 4);
+          ctx.quadraticCurveTo(s * sz * 0.6, 12, s * sz * 0.75, 4);
+          ctx.quadraticCurveTo(s * sz * 0.4, 0, 0, 0);
+          ctx.fillStyle = '#1e3f1c';
+          ctx.fill();
+        }
+
+        // Halo suave
+        const glow = ctx.createRadialGradient(0, 0, sz * 0.2, 0, 0, sz * 2.3);
+        glow.addColorStop(0, this.palette.glow);
+        glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(0, 0, sz * 2.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pétalos exteriores
+        const outerPetals = 7;
+        for (let i = 0; i < outerPetals; i++) {
+          const angle = (Math.PI * 2 / outerPetals) * i;
+          ctx.save();
+          ctx.rotate(angle);
+          ctx.beginPath();
+          ctx.ellipse(sz * 0.75, 0, sz * 0.78, sz * 0.44, 0, 0, Math.PI * 2);
+          const pGrad = ctx.createRadialGradient(sz * 0.75, 0, 2, sz * 0.75, 0, sz * 0.8);
+          pGrad.addColorStop(0, this.palette.light);
+          pGrad.addColorStop(0.65, this.palette.main);
+          pGrad.addColorStop(1, this.palette.mid);
+          ctx.fillStyle = pGrad;
+          ctx.fill();
+
+          ctx.strokeStyle = this.palette.rim;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Pétalos intermedios
+        const midPetals = 5;
+        for (let i = 0; i < midPetals; i++) {
+          const angle = (Math.PI * 2 / midPetals) * i + 0.35;
+          ctx.save();
+          ctx.rotate(angle);
+          ctx.beginPath();
+          ctx.ellipse(sz * 0.4, 0, sz * 0.52, sz * 0.34, 0, 0, Math.PI * 2);
+          ctx.fillStyle = this.palette.main;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Núcleo
+        ctx.beginPath();
+        ctx.arc(0, 0, sz * 0.35, 0, Math.PI * 2);
+        const coreGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, sz * 0.35);
+        coreGrad.addColorStop(0, this.palette.dark);
+        coreGrad.addColorStop(0.7, this.palette.mid);
+        coreGrad.addColorStop(1, this.palette.main);
+        ctx.fillStyle = coreGrad;
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    // Dibujo del Pastel Monumental de 3 Pisos para Silvia
+    function drawBirthdayCake() {
+      const cx = cakeState.x;
+      const cy = cakeState.y;
+      const cw = cakeState.width;
+
+      ctx.save();
+
+      // Bandeja Dorada
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 10, cw * 0.68, 16, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 215, 64, 0.45)';
+      ctx.fill();
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // ====== PISO 1 (Base Grande) ======
+      const h1 = 52;
+      const y1 = cy - h1;
+      const g1 = ctx.createLinearGradient(cx - cw * 0.5, 0, cx + cw * 0.5, 0);
+      g1.addColorStop(0, '#36151b');
+      g1.addColorStop(0.5, '#561c24');
+      g1.addColorStop(1, '#36151b');
+      ctx.fillStyle = g1;
+      ctx.beginPath();
+      ctx.roundRect(cx - cw * 0.5, y1, cw, h1, [0, 0, 10, 10]);
+      ctx.fill();
+
+      // Crema piso 1
+      ctx.fillStyle = '#fff0f5';
+      ctx.beginPath();
+      ctx.ellipse(cx, y1, cw * 0.5, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Nombre en el pastel: "Silvia ✨"
+      ctx.font = "bold 15px 'Playfair Display', serif";
+      ctx.fillStyle = "#ffd54f";
+      ctx.textAlign = "center";
+      ctx.shadowColor = "rgba(0,0,0,0.9)";
+      ctx.shadowBlur = 5;
+      ctx.fillText("Silvia ✨", cx, y1 + 32);
+      ctx.shadowBlur = 0;
+
+      // Perlas decorativas Piso 1
+      const pearlsPiso1 = 12;
+      for (let p = 0; p < pearlsPiso1; p++) {
+        const px = cx - (cw * 0.44) + (p * ((cw * 0.88) / (pearlsPiso1 - 1)));
+        ctx.beginPath();
+        ctx.arc(px, y1 + 4, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffd54f';
+        ctx.fill();
+      }
+
+      // ====== PISO 2 (Nivel Medio) ======
+      const w2 = cw * 0.74;
+      const h2 = 44;
+      const y2 = y1 - h2 + 4;
+      const g2 = ctx.createLinearGradient(cx - w2 * 0.5, 0, cx + w2 * 0.5, 0);
+      g2.addColorStop(0, '#880e4f');
+      g2.addColorStop(0.5, '#c2185b');
+      g2.addColorStop(1, '#880e4f');
+      ctx.fillStyle = g2;
+      ctx.beginPath();
+      ctx.roundRect(cx - w2 * 0.5, y2, w2, h2, [0, 0, 8, 8]);
+      ctx.fill();
+
+      // Crema piso 2
+      ctx.fillStyle = '#fff5f8';
+      ctx.beginPath();
+      ctx.ellipse(cx, y2, w2 * 0.5, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Frase intermedia
+      ctx.font = "italic 12px 'Playfair Display', serif";
+      ctx.fillStyle = "#ffe082";
+      ctx.fillText("♥ Feliz Cumpleaños ♥", cx, y2 + 26);
+
+      // ====== PISO 3 (Nivel Superior) ======
+      const w3 = w2 * 0.70;
+      const h3 = 38;
+      const y3 = y2 - h3 + 4;
+      const g3 = ctx.createLinearGradient(cx - w3 * 0.5, 0, cx + w3 * 0.5, 0);
+      g3.addColorStop(0, '#ad1457');
+      g3.addColorStop(0.5, '#d81b60');
+      g3.addColorStop(1, '#ad1457');
+      ctx.fillStyle = g3;
+      ctx.beginPath();
+      ctx.roundRect(cx - w3 * 0.5, y3, w3, h3, [0, 0, 6, 6]);
+      ctx.fill();
+
+      // Crema piso 3
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.ellipse(cx, y3, w3 * 0.5, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Frutos rojos
+      [-w3 * 0.35, 0, w3 * 0.35].forEach(fx => {
+        ctx.beginPath();
+        ctx.arc(cx + fx, y3, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#d50000';
+        ctx.fill();
+      });
+
+      // ====== 5 VELITAS ======
+      const candleOffsets = [-40, -20, 0, 20, 40];
+      const candleColors = ['#ff4081', '#ffd54f', '#ffffff', '#ffd54f', '#ff4081'];
+
+      candleOffsets.forEach((offset, idx) => {
+        const canX = cx + offset;
+        const canY = y3 - 22;
+
+        ctx.fillStyle = candleColors[idx];
+        ctx.fillRect(canX - 2.8, canY, 5.6, 22);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(canX - 2.5, canY + 4);
+        ctx.lineTo(canX + 2.5, canY + 8);
+        ctx.moveTo(canX - 2.5, canY + 12);
+        ctx.lineTo(canX + 2.5, canY + 16);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#222';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(canX, canY);
+        ctx.lineTo(canX, canY - 6);
+        ctx.stroke();
+
+        if (cakeState.candlesLit) {
+          const flameOsc = Math.sin(globalTime * 8 + idx) * 1.6;
+          const flameY = canY - 11;
+
+          const fGlow = ctx.createRadialGradient(canX, flameY, 1, canX, flameY, 17);
+          fGlow.addColorStop(0, 'rgba(255, 235, 59, 0.8)');
+          fGlow.addColorStop(0.5, 'rgba(255, 112, 67, 0.35)');
+          fGlow.addColorStop(1, 'rgba(255, 112, 67, 0)');
+          ctx.fillStyle = fGlow;
+          ctx.beginPath();
+          ctx.arc(canX, flameY, 17, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#fffde7';
+          ctx.beginPath();
+          ctx.ellipse(canX + flameOsc * 0.4, flameY, 3.5, 7.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // Humo si se soplaron
+      for (let i = cakeState.smokeParticles.length - 1; i >= 0; i--) {
+        const p = cakeState.smokeParticles[i];
+        p.y -= 0.9;
+        p.x += Math.sin(p.y * 0.05) * 0.6;
+        p.alpha -= 0.015;
+        ctx.fillStyle = `rgba(215, 215, 225, ${Math.max(0, p.alpha)})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        if (p.alpha <= 0) cakeState.smokeParticles.splice(i, 1);
+      }
+
+      ctx.restore();
+    }
+
+    // Soplar / Encender velitas
+    function blowOrLightCandles() {
+      initAudio();
+      cakeState.candlesLit = !cakeState.candlesLit;
+
+      if (!cakeState.candlesLit) {
+        playCelebrationFanfare();
+        const candleOffsets = [-40, -20, 0, 20, 40];
+        candleOffsets.forEach(offset => {
+          for (let i = 0; i < 7; i++) {
+            cakeState.smokeParticles.push({
+              x: cakeState.x + offset,
+              y: cakeState.y - 150,
+              size: 2.8 + Math.random() * 3.5,
+              alpha: 0.85
+            });
+          }
+        });
+
+        for (let i = 0; i < 60; i++) {
+          confetti.push(new ConfettiParticle(cakeState.x, cakeState.y - 150));
+        }
+
+        const quote = document.getElementById('quoteSnippet');
+        if (quote) quote.textContent = "«¡Deseo de cumpleaños pedido para Silvia en su gran día!»";
+      } else {
+        playSoftChime();
+        const quote = document.getElementById('quoteSnippet');
+        if (quote) quote.textContent = "«Que este nuevo año de vida llegue colmado de sonrisas, salud, prosperidad y bendiciones para ti, Silvia.»";
+      }
+    }
+
+    // Confeti
+    class ConfettiParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = 5 + Math.random() * 6;
+        this.vx = (Math.random() - 0.5) * 14;
+        this.vy = -(7 + Math.random() * 9);
+        this.gravity = 0.25;
+        this.rot = Math.random() * Math.PI * 2;
+        this.vRot = (Math.random() - 0.5) * 0.2;
+        const colors = ['#ffd700', '#ff4081', '#00e676', '#00e5ff', '#ff9100', '#e040fb', '#ffffff'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.vy += this.gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.rot += this.vRot;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.size * 0.5, -this.size * 0.5, this.size, this.size * 0.6);
+        ctx.restore();
+      }
+    }
+
+    // Césped
+    class Grass {
+      constructor(x, y, h) {
+        this.x = x;
+        this.y = y;
+        this.h = h;
+        this.offset = Math.random() * 10;
+        this.color = Math.random() > 0.5 ? '#163314' : '#0f240e';
+      }
+      draw(wind) {
+        const bend = Math.sin(globalTime * 2 + this.offset) * 8 + (wind * 0.5);
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.quadraticCurveTo(this.x + bend * 0.5, this.y - this.h * 0.5, this.x + bend, this.y - this.h);
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
+      }
+    }
+
+    // Estrellas doradas
+    class FloatingStar {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = 7 + Math.random() * 7;
+        this.vy = -(1.2 + Math.random() * 1.5);
+        this.vx = (Math.random() - 0.5) * 1.5;
+        this.alpha = 1;
+        this.decay = 0.012 + Math.random() * 0.015;
+      }
+      update() {
+        this.y += this.vy;
+        this.x += this.vx;
+        this.alpha -= this.decay;
+      }
+      draw() {
+        if (this.alpha <= 0) return;
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = '#ffd54f';
+        ctx.beginPath();
+        const spikes = 5;
+        const outer = this.size;
+        const inner = this.size * 0.45;
+        for (let i = 0; i < spikes * 2; i++) {
+          const r = i % 2 === 0 ? outer : inner;
+          const a = (Math.PI / spikes) * i;
+          const sx = Math.cos(a) * r;
+          const sy = Math.sin(a) * r;
+          if (i === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Pétalos flotantes
+    class FloatingPetal {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = -20;
+        this.size = 8 + Math.random() * 8;
+        this.vy = 1.2 + Math.random() * 1.6;
+        this.rot = Math.random() * Math.PI * 2;
+        this.vRot = (Math.random() - 0.5) * 0.04;
+        const p = flowerPalettes[Math.floor(Math.random() * flowerPalettes.length)];
+        this.color = p.main;
+      }
+      update(wind) {
+        this.x += (wind * 0.12) + Math.sin(this.y * 0.02) * 1.2;
+        this.y += this.vy;
+        this.rot += this.vRot;
+        if (this.y > height + 20 || this.x > width + 50) {
+          this.reset();
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.size, this.size * 0.55, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Luciérnagas
+    class Firefly {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height * 0.8;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.radius = 1.2 + Math.random() * 1.6;
+        this.phase = Math.random() * Math.PI * 2;
+        this.speed = 0.5 + Math.random() * 0.8;
+      }
+      update() {
+        this.x = this.baseX + Math.sin(globalTime * this.speed + this.phase) * 35;
+        this.y = this.baseY + Math.cos(globalTime * this.speed * 0.7 + this.phase) * 25;
+      }
+      draw() {
+        const glow = (Math.sin(globalTime * 3 + this.phase) + 1) / 2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius + glow * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 215, 64, ${0.3 + glow * 0.6})`;
+        ctx.fill();
+      }
+    }
+
+    function initScene() {
+      flowers = [];
+      petals = [];
+      fireflies = [];
+      grassBlades = [];
+      confetti = [];
+
+      cakeState.x = width * 0.5;
+      cakeState.y = height - 45;
+      cakeState.width = Math.min(270, width * 0.65);
+
+      const grassCount = Math.floor(width / 7);
+      for (let i = 0; i < grassCount; i++) {
+        grassBlades.push(new Grass(i * 7 + Math.random() * 4, height, 85 + Math.random() * 95));
+      }
+
+      const count = Math.max(30, Math.floor(width / 24));
+      for (let i = 0; i < count; i++) {
+        const x = (width / count) * i + (Math.random() * 20 - 10);
+        if (Math.abs(x - cakeState.x) < cakeState.width * 0.55) continue;
+
+        const scale = 0.7 + Math.random() * 0.45;
+        flowers.push(new MultiColorFlower(x, height + 15, scale));
+      }
+
+      flowers.sort((a, b) => a.scale - b.scale);
+
+      for (let i = 0; i < 30; i++) petals.push(new FloatingPetal());
+      for (let i = 0; i < 35; i++) fireflies.push(new Firefly());
+
+      updateCounter();
+    }
+
+    function addFlowerCluster(touchX, touchY) {
+      initAudio();
+      playSoftChime();
+
+      const newFl = new MultiColorFlower(touchX, height + 15, 0.85 + Math.random() * 0.45);
+      newFl.growth = 0.01;
+      flowers.push(newFl);
+      flowers.sort((a, b) => a.scale - b.scale);
+
+      for (let i = 0; i < 5; i++) {
+        stars.push(new FloatingStar(touchX + (Math.random() * 30 - 15), touchY || (height * 0.6)));
+      }
+
+      updateCounter();
+    }
+
+    function updateCounter() {
+      const el = document.getElementById('flowerCount');
+      if (el) el.textContent = `💐 ${flowers.length} flores sembradas`;
+    }
+
+    function animate() {
+      globalTime += 0.02;
+      currentWind += (windTarget - currentWind) * 0.04;
+
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+      bgGrad.addColorStop(0, '#070409');
+      bgGrad.addColorStop(0.65, '#190a17');
+      bgGrad.addColorStop(1, '#0e1810');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      const moonGrad = ctx.createRadialGradient(width * 0.82, height * 0.16, 5, width * 0.82, height * 0.16, 90);
+      moonGrad.addColorStop(0, 'rgba(255, 248, 225, 0.45)');
+      moonGrad.addColorStop(0.35, 'rgba(255, 128, 171, 0.15)');
+      moonGrad.addColorStop(1, 'rgba(255, 128, 171, 0)');
+      ctx.fillStyle = moonGrad;
+      ctx.beginPath();
+      ctx.arc(width * 0.82, height * 0.16, 90, 0, Math.PI * 2);
+      ctx.fill();
+
+      fireflies.forEach(f => {
+        f.update();
+        f.draw();
+      });
+
+      grassBlades.forEach(g => g.draw(currentWind));
+
+      flowers.forEach(f => {
+        f.update(currentWind);
+        f.draw();
+      });
+
+      drawBirthdayCake();
+
+      for (let i = confetti.length - 1; i >= 0; i--) {
+        confetti[i].update();
+        confetti[i].draw();
+        if (confetti[i].y > height + 20) confetti.splice(i, 1);
+      }
+
+      for (let i = stars.length - 1; i >= 0; i--) {
+        stars[i].update();
+        stars[i].draw();
+        if (stars[i].alpha <= 0) stars.splice(i, 1);
+      }
+
+      petals.forEach(p => {
+        p.update(currentWind);
+        p.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initScene();
+    });
+
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.mini-panel') || e.target.closest('.top-bar') || e.target.closest('.letter-modal')) {
+        return;
+      }
+
+      const distToCakeX = Math.abs(e.clientX - cakeState.x);
+      const distToCakeY = Math.abs(e.clientY - (cakeState.y - 70));
+      if (distToCakeX < cakeState.width * 0.55 && distToCakeY < 95) {
+        blowOrLightCandles();
+        return;
+      }
+
+      addFlowerCluster(e.clientX, e.clientY);
+    });
+
+    document.getElementById('windSlider').addEventListener('input', (e) => {
+      windTarget = parseFloat(e.target.value);
+    });
+
+    document.getElementById('btnSpawn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      addFlowerCluster(width * (0.2 + Math.random() * 0.6), height * 0.6);
+    });
+
+    document.getElementById('btnBlow').addEventListener('click', (e) => {
+      e.stopPropagation();
+      blowOrLightCandles();
+    });
+
+    const miniPanel = document.getElementById('miniPanel');
+    const toggleCollapse = document.getElementById('toggleCollapse');
+
+    toggleCollapse.addEventListener('click', (e) => {
+      e.stopPropagation();
+      miniPanel.classList.add('collapsed');
+    });
+
+    miniPanel.addEventListener('click', () => {
+      if (miniPanel.classList.contains('collapsed')) {
+        miniPanel.classList.remove('collapsed');
+      }
+    });
+
+    const letterModal = document.getElementById('letterModal');
+    const btnLetter = document.getElementById('btnLetter');
+    const btnCloseLetter = document.getElementById('btnCloseLetter');
+
+    btnLetter.addEventListener('click', () => {
+      initAudio();
+      playSoftChime();
+      letterModal.classList.add('active');
+    });
+
+    btnCloseLetter.addEventListener('click', () => {
+      letterModal.classList.remove('active');
+    });
+
+    letterModal.addEventListener('click', (e) => {
+      if (e.target === letterModal) {
+        letterModal.classList.remove('active');
+      }
+    });
+
+    initScene();
+    animate();
+  </script>
+</body>
+</html>
